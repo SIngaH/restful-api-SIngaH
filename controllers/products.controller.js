@@ -32,10 +32,27 @@ exports.getSingleProduct = function(req, res){
 
 /* -------------------------------Update------------------------------- */
 exports.patchProduct = function(req, res){
-    //opdaterer et product
+    if(req.fields.price){
+       req.fields.price = parseFloat(req.fields.price); 
+    }
+    if(req.fields.weight){
+        req.fields.weight = parseFloat(req.fields.weight);
+    }
+    
+    ProductRef.where("sku", "==", req.params.sku).get()
+        .then(docs =>{
+            docs.forEach(doc => doc.ref.update({ ...req.fields }).get()
+                .then(doc => res.json(doc.data()))
+            );
+        })
 };
 
 /* -------------------------------Delete------------------------------- */
 exports.deleteProduct = function(req, res){
-    //sletter et product
+    ProductRef.where("sku", "==", req.params.sku).get()
+        .then(docs => {
+            docs.forEach(doc => doc.ref.delete());
+        })
+        .catch(err => res.status(500).json({message: err}));
+    res.status(204).end();
 };
