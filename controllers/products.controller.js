@@ -1,29 +1,41 @@
 const ProductRef = require("../models/product.model");
 
+/* -------------------------------CRUD------------------------------- */
+
+/* -------------------------------Create------------------------------- */
 exports.createProduct = function(req, res){
-    //opret e product - mangler
+    req.fields.price = parseFloat(req.fields.price);  //så det ikke har en string
+    req.fields.weight = parseFloat(req.fields.weight);
+
+    ProductRef.add({ ...req.fields })
+    .then(ref => {
+        ref.get().then(doc => res.status(201).json(doc.data()))  
+    })
+    .catch(error => res.json(error));
 };
 
+/* -------------------------------Read------------------------------- */
 exports.getAllProducts = function(req, res){
-    res.json(products);
     ProductRef.get().then(docs =>{
-        docs.forEach(doc => console.log(doc.data()))
+        const results = [] ;
+        docs.forEach(doc => results.push(doc.data()))
+        res.json(results);
     });
 };
 
 exports.getSingleProduct = function(req, res){
-    const result = products.find(product => product.sku == req.params.sku);
-    res.json(result);
+    ProductRef.where("sku", "==", req.params.sku).get()
+        .then(docs => {
+            docs.forEach(doc => res.json(doc.data()))
+        });
 };
 
-exports.deleteProduct = function(req, res){
-    //sletter et product
-};
-
+/* -------------------------------Update------------------------------- */
 exports.patchProduct = function(req, res){
     //opdaterer et product
 };
 
-exports.postProduct = function(req, res){
-    // opret et product
+/* -------------------------------Delete------------------------------- */
+exports.deleteProduct = function(req, res){
+    //sletter et product
 };
