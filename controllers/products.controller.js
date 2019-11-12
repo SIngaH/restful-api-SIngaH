@@ -91,10 +91,15 @@ exports.patchProduct = async function(req, res){
             .get()
         
             docs.forEach(async doc => {
-                doc.ref.update({ ...req.fields });
-                const result = await doc.ref.get();
-                res.json(result.data())
-            });
+                try {
+                    doc.ref.update({ ...req.fields });
+                    const result = await doc.ref.get();
+                    res.json(result.data())
+                } catch (error) {
+                    log.error(error.stack);
+                    res.status(500).end(); 
+                } 
+            })
     } catch (error) {
         log.error(error.stack);
         res.status(500).end();
