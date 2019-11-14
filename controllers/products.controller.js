@@ -34,18 +34,18 @@ exports.createProduct = function(req, res){
 // };
 
 /* -------------------------------Read again------------------------------- */
-exports.getAllProducts = async function(req, res){
-    try {
-        const docs = await ProductRef
-        .get();
-        const results = [] ;
-        docs.forEach(doc => results.push(doc.data()))
-        res.json(results);
-    } catch (error) {
-        log.error(error.stack);
-        res.status(500).end();      
-    }
-};
+// exports.getAllProducts = async function(req, res){
+//     try {
+//         const docs = await ProductRef
+//         .get();
+//         const results = [] ;
+//         docs.forEach(doc => results.push(doc.data()))
+//         res.json(results);
+//     } catch (error) {
+//         log.error(error.stack);
+//         res.status(500).end();      
+//     }
+// };
 
 exports.getSingleProduct = async function(req, res){
     try{
@@ -59,6 +59,24 @@ exports.getSingleProduct = async function(req, res){
         res.status(500).end();
     }
 }
+
+/* ---------------------------------category--------------------------------- */
+exports.getAllProducts = async function(req, res){
+    try {
+        let docs;
+        if(req.query.category){
+            docs = await ProductRef.where("category", "==", req.query.category).get();
+        }else{
+            docs = await ProductRef.get();
+        }
+        const results = [] ;
+        docs.forEach(doc => results.push(doc.data()))
+        res.json(results);
+    } catch (error) {
+        log.error(error.stack);
+        res.status(500).end();      
+    }
+};
 
 /* -------------------------------Update------------------------------- */
 // exports.patchProduct = function(req, res){
