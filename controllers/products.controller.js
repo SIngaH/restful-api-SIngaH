@@ -61,7 +61,7 @@ exports.getSingleProduct = async function(req, res){
 }
 
 /* ---------------------------------category--------------------------------- */
-exports.getAllProducts = async function(req, res){
+exports.getAllProducts = async function(req, res){ //get all products + get category
     try {
         let docs;
         if(req.query.category){
